@@ -225,6 +225,7 @@ void deleteNode(char target[]){
     if (temp != NULL && strcmp(temp->name, target) == 0) {
         contactRecord = temp->next;
         free(temp);
+        list_size--;
         printf("\nberhasil dihapus\n");
         return;
     }
@@ -239,6 +240,7 @@ void deleteNode(char target[]){
     if (temp != NULL && strcmp(temp->name, target) == 0){
         prev->next = temp->next;
         free(temp);
+        list_size--;
         printf("\nberhasil dihapus\n");
         return;
     } else {
