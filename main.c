@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+
 
 /*
 buku telepon
@@ -22,15 +24,18 @@ Upload source code ; jangan lupa dikasih comment, codingannya jgn kosongan
 
 
 /*
+    tahap yang berhasil
     - data di simpan di txt file
+    - loading data
+    - simpan data di akhir linkedlist
+    - print linkedlist
+    - searching selesai
 
-    refrensi
-
-    - handling txt file
-        https://www.geeksforgeeks.org/basics-file-handling-c/
-        https://www.programiz.com/c-programming/c-file-input-output
-        https://www.tutorialspoint.com/cprogramming/c_file_io.htm
-        https://solarianprogrammer.com/2019/04/03/c-programming-read-file-lines-fgets-getline-implement-portable-getline/#:~:text=The%20standard%20way%20of%20reading,GitHub%20repo%20for%20this%20article.
+    tahap yang belum
+    - sorting
+    - edit data
+    - delete
+    - final touch
 */
 struct node {
     char *name;
@@ -38,24 +43,50 @@ struct node {
     struct node *next;
 };
 
+struct node *contactRecord, *record;
+int list_size = 0;
 
-
-void printContactRecord(struct node * head)
-{
-    struct node * iterator = head;
+void printContactRecord(){
+    struct node * iterator = record;
     while(iterator != NULL)
     {
-        printf("nama kontak: %s\n", iterator->name);
-        printf("nomor kontak: %s\n", iterator->number);
+        printf("%s\n", iterator->name);
+        printf("%s\n", iterator->number);
         iterator=iterator->next;
     }
 }
 
-void appendToFile(struct * node head)
-{
+void saveContact(){
+    int count, i;
+    printf("berapa banyak kontak yang ingin kamu simpan? ");
+    scanf("%d", &count);
+    for(i=0; i<count; i++){
+        if(record==NULL)
+        {
+            record = contactRecord;
+        }
+        else
+        {
+            record->next = malloc(sizeof(struct node));
+            record = record->next;
+        }
+        record->name = malloc(50*sizeof(char));
+        record->number = malloc(50*sizeof(char));
+        printf("nama kontak: ");
+        scanf(" %[^\n]s", record->name);
+        printf("nomor kontak: ");
+        scanf("%s", record->number);
+        list_size++;
+    }
+    record->next = NULL;
+    printf("\nberhasil disimpan\n");
+
+}
+
+void writeToFile(){
     FILE * fptr;
-    fptr = fopen("data.txt", "a");
-    struct node * iterator = head;
+    fptr = fopen("data.txt", "w");
+    struct node * iterator = contactRecord;
 
     if(fptr==NULL)
     {
@@ -72,61 +103,6 @@ void appendToFile(struct * node head)
     }
 
     fclose(fptr);
-    }
-
-void saveContact(struct * node head){
-    int count, i;
-    printf("berapa banyak kontak yang ingin kamu simpan? ");
-    scanf("%d", &count);
-    struct node * newRecord;
-    for(i=0; i<count; i++)
-    {
-        if(i==0)
-        {
-            newRecord = head;
-        }
-        else
-        {
-            newRecord->next = malloc(sizeof(struct node));
-            newRecord = newRecord->next;
-        }
-        newRecord->name = malloc(50*sizeof(char));
-        newRecord->number = malloc(50*sizeof(char));
-        printf("nama kontak: ");
-        scanf(" %[^\n]s", newRecord->name);
-        printf("nomor kontak: ");
-        scanf("%s", newRecord->number);
-    }
-    newRecord->next = NULL;
-    printf("\n\n");
-    appendToFile();
-    free(newRecord);
-    printf("\nberhasil disimpan");
-
-}
-
-// loading data harus di masukkan ke linked list utama, gimana caranyaaa????
-
-void insert_end(char nama[], char nomor[]) {
-    struct node * new_node = malloc(sizeof(struct node));
-    if (new_node == NULL) {
-        exit(1);
-    }
-    new_node->next = NULL;
-    new_node->name = nama;
-    new_node->number = nomor;
-
-    if (head == NULL) {
-        head = new_node;
-        printf("\n");
-        return;
-    }
-
-    struct node * curr = head;
-    while (curr->next != NULL) {
-        curr = curr->next;
-    }
-    curr->next = new_node;
 }
 
 void loadingData(){
@@ -136,19 +112,67 @@ void loadingData(){
         exit(1);
     }
 
-    char nama[50], nomor[50];
-
-    while (fscanf(fp, "%s %s", nama, nomor) > 0){
-
+    record = contactRecord;
+    record->name = malloc(50*sizeof(char));
+    record->number = malloc(50*sizeof(char));
+    while (fscanf(fp, "%s %s", record->name, record->number) > 0){
+        record->next = malloc(sizeof(struct node));
+        record = record->next;
+        record->name = malloc(50*sizeof(char));
+        record->number = malloc(50*sizeof(char));
+        list_size++;
     }
+    record->next = NULL;
+    record->name = NULL;
+    record->number = NULL;
     fclose(fp);
+}
+
+
+// sortingnya agak bingung
+void swap(struct node* ptr1, struct node* ptr2){
+    struct node* tmp = ptr2->next;
+    ptr2->next = ptr1;
+    ptr1->next = tmp;
+    return ptr2;
+}
+
+void sort(int count){
+
+}
+
+// searching
+void searchName(char target[]){
+    struct node * iterator = contactRecord;
+    while (iterator != NULL){
+        char str[50];
+        strcpy(str, iterator->name);
+        for (int i=0; str[i]; i++){
+            str[i] = tolower(str[i]);
+        }
+        for (int i=0; target[i]; i++){
+            target[i] = tolower(target[i]);
+        }
+        if (strcmp(str, target) == 0){
+            printf("%s\n%s", iterator->name, iterator->number);
+            return;
+        }
+        iterator = iterator->next;
+    }
+
+}
+
+void searchNumber(char target[]){
+    // belum bang lagi mikir ganti number jdi integer
 }
 
 int main()
 {
-    struct node *contactRecord = malloc(sizeof(struct node));
-
+    contactRecord = malloc(sizeof(struct node));
     loadingData();
-    printContactRecord(contactRecord);
+    char str[50];
+    scanf("%s", str);
+    searchName(str);
+
     return 0;
 }
