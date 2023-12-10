@@ -25,16 +25,16 @@ Upload source code ; jangan lupa dikasih comment, codingannya jgn kosongan
 
 /*
     tahap yang berhasil
-    - data di simpan di txt file
-    - loading data
+    - data di simpan di txt file tpi gk bisa nyimpan spasi
+    - loading data gk bisa loading spasi
     - simpan data di akhir linkedlist
     - print linkedlist
-    - searching selesai
+    - searching selesai (searching nama, searching nomor)
+    - edit data
+    - delete
 
     tahap yang belum
     - sorting
-    - edit data
-    - delete
     - final touch
 */
 struct node {
@@ -47,7 +47,7 @@ struct node *contactRecord, *record;
 int list_size = 0;
 
 void printContactRecord(){
-    struct node * iterator = record;
+    struct node * iterator = contactRecord;
     while(iterator != NULL)
     {
         printf("%s\n", iterator->name);
@@ -159,20 +159,101 @@ void searchName(char target[]){
         }
         iterator = iterator->next;
     }
-
+    printf("\ngk ada bang\n");
+    return;
 }
 
 void searchNumber(char target[]){
-    
+    struct node * iterator = contactRecord;
+    while (iterator != NULL){
+        if (strcmp(iterator->number, target) == 0){
+            printf("%s\n%s", iterator->name, iterator->number);
+            return;
+        }
+        iterator = iterator->next;
+
+    }
+    printf("\ngk ada bang\n");
+    return;
 }
 
-int main()
-{
+// edit
+void editNumber(char target[]){
+    record = contactRecord;
+    while (record != NULL){
+        if (strcmp(record->number, target) == 0){
+            printf("nomor kontak baru : ");
+            scanf("%s", record->number);
+            printf("\nberhasil diubah\n");
+            return;
+        }
+        record = record->next;
+    }
+    printf("\ngk ada bang\n");
+    return;
+
+}
+
+void editName(char target[]){
+    record = contactRecord;
+    while (record != NULL){
+        char str[50];
+        strcpy(str, record->name);
+        for (int i=0; str[i]; i++){
+            str[i] = tolower(str[i]);
+        }
+        for (int i=0; target[i]; i++){
+            target[i] = tolower(target[i]);
+        }
+        if (strcmp(str, target) == 0){
+            printf("nama kontak baru : ");
+            scanf("%s", record->name);
+            printf("\nberhasil diubah\n");
+            return;
+        }
+        record = record->next;
+    }
+    printf("\ngk ada bang\n");
+    return;
+
+}
+
+// delete
+void deleteNode(char target[]){
+    struct node * temp = contactRecord, * prev;
+
+    if (temp != NULL && strcmp(temp->name, target) == 0) {
+        contactRecord = temp->next;
+        free(temp);
+        printf("\nberhasil dihapus\n");
+        return;
+    }
+    int i = 1;
+    while (temp != NULL && strcmp(temp->name, target) != 0) {
+        prev = temp;
+        temp = temp->next;
+        i++;
+        if (i == list_size) break;
+    }
+
+    if (temp != NULL && strcmp(temp->name, target) == 0){
+        prev->next = temp->next;
+        free(temp);
+        printf("\nberhasil dihapus\n");
+        return;
+    } else {
+        printf("\ngk ada bang\n");
+        return;
+    }
+}
+
+int main(){
     contactRecord = malloc(sizeof(struct node));
     loadingData();
-    char str[50];
-    scanf("%s", str);
-    searchName(str);
+    char x[50];
+    scanf("%s", x);
+    deleteNode(x);
+    printContactRecord();
 
     return 0;
 }
