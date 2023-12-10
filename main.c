@@ -163,7 +163,7 @@ void searchName(char target[]){
 }
 
 void searchNumber(char target[]){
-    // belum bang lagi mikir ganti number jdi integer
+    
 }
 
 int main()
