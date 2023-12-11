@@ -268,7 +268,7 @@ void deleteNode(char target[]){
 int main(){
     contactRecord = malloc(sizeof(struct node));
     loadingData();
-    printf("Aplikasi Buku Telepon By Kelompok 3")
+    printf("Aplikasi Buku Telepon By Kelompok 6")
     writeToFile();
 
     return 0;
