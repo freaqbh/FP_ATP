@@ -34,7 +34,6 @@ Upload source code ; jangan lupa dikasih comment, codingannya jgn kosongan
     - delete
 
     tahap yang belum
-    - sorting
     - final touch
 */
 struct node {
@@ -129,16 +128,36 @@ void loadingData(){
 }
 
 
-// sortingnya agak bingung
-void swap(struct node* ptr1, struct node* ptr2){
-    struct node* tmp = ptr2->next;
-    ptr2->next = ptr1;
-    ptr1->next = tmp;
-    return ptr2;
-}
+// bubblesort
+void sort(){
+    struct node * temp = contactRecord, *prev;
+    int swapped;
 
-void sort(int count){
+    char nama1[50], nama2[50];
+    char nomor1[50], nomor2[50];
 
+    for (int i=0; i<list_size-1; i++){
+            temp = contactRecord;
+            swapped = 0;
+        for (int j=0; j<list_size-i-1; j++){
+            prev = temp;
+            temp = temp->next;
+            strcpy(nama1, prev->name);
+            strcpy(nama2, temp->name);
+            strcpy(nomor1, prev->number);
+            strcpy(nomor2, temp->number);
+            if (strcmp(nama2, nama1) < 0){
+                strcpy(prev->name, nama2);
+                strcpy(temp->name, nama1);
+                strcpy(prev->number, nomor2);
+                strcpy(temp->number, nomor1);
+                swapped = 1;
+            }
+        }
+        if (swapped == 0){
+            break;
+        }
+    }
 }
 
 // searching
@@ -252,9 +271,7 @@ void deleteNode(char target[]){
 int main(){
     contactRecord = malloc(sizeof(struct node));
     loadingData();
-    char x[50];
-    scanf("%s", x);
-    deleteNode(x);
+    sort();
     printContactRecord();
 
     return 0;
