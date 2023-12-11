@@ -47,8 +47,7 @@ int list_size = 0;
 
 void printContactRecord(){
     struct node * iterator = contactRecord;
-    while(iterator != NULL)
-    {
+    for(int i=0; i<list_size; i++){
         printf("%s\n", iterator->name);
         printf("%s\n", iterator->number);
         iterator=iterator->next;
@@ -72,7 +71,7 @@ void saveContact(){
         record->name = malloc(50*sizeof(char));
         record->number = malloc(50*sizeof(char));
         printf("nama kontak: ");
-        scanf(" %[^\n]s", record->name);
+        scanf("%s", record->name);
         printf("nomor kontak: ");
         scanf("%s", record->number);
         list_size++;
@@ -94,8 +93,7 @@ void writeToFile(){
 
     else
     {
-        while(iterator!= NULL)
-        {
+        for(int i=0; i<list_size; i++){
             fprintf(fptr, "%s\n%s\n", iterator->name, iterator->number);
             iterator= iterator->next;
         }
@@ -122,8 +120,9 @@ void loadingData(){
         list_size++;
     }
     record->next = NULL;
-    record->name = NULL;
-    record->number = NULL;
+    //record->name = NULL;
+    //record->number = NULL;
+    free(record);
     fclose(fp);
 }
 
@@ -248,12 +247,10 @@ void deleteNode(char target[]){
         printf("\nberhasil dihapus\n");
         return;
     }
-    int i = 1;
+    //int i = 1;
     while (temp != NULL && strcmp(temp->name, target) != 0) {
         prev = temp;
         temp = temp->next;
-        i++;
-        if (i == list_size) break;
     }
 
     if (temp != NULL && strcmp(temp->name, target) == 0){
@@ -271,8 +268,8 @@ void deleteNode(char target[]){
 int main(){
     contactRecord = malloc(sizeof(struct node));
     loadingData();
-    sort();
-    printContactRecord();
+    
+    writeToFile();
 
     return 0;
 }
