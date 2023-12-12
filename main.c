@@ -32,32 +32,29 @@ Upload source code ; jangan lupa dikasih comment, codingannya jgn kosongan
     - searching selesai (searching nama, searching nomor)
     - edit data
     - delete
-
-    tahap yang belum
-    - final touch
 */
 
 // linkedlist untuk menyimpan nama kontak dan nomor hp
 struct node {
-    char *name;
-    char *number;
+    char *name; // node nama kontak
+    char *number; // node nomor kontak
     struct node *next;
 };
 
-struct node *contactRecord, *record;
+struct node *contactRecord, *record; // contactRecord sebagai head node nya, record sebagai ptr nya
+
 // ukuran dari banyaknya node terus di ditambah ketika ada penambahan dan dikurang ketika ada pengurangan dan disimpan di variabel list_size
 int list_size = 0;
-
 
 // fungsi ini untuk menampilkan isi dari linkedlistnya
 // fidel
 void printContactRecord(){
-    struct node * iterator = contactRecord;
-    while (iterator!=NULL){
+    struct node * iterator = contactRecord; // node iterator di assign ke head nodenya
+    while (iterator!=NULL){ // terus di loop sampai node terakhir
         printf("nama kontak  : %s\n", iterator->name);
         printf("nomor kontak : %s\n", iterator->number);
         printf("-------------------------------------------------------------\n");
-        iterator=iterator->next;
+        iterator=iterator->next; // pindah ke node setelahnya
     }
     printf("\n");
 }
@@ -66,26 +63,26 @@ void printContactRecord(){
 // tika
 void saveContact(){
     int count, i;
-    struct node * temp = contactRecord;
+    struct node * temp = contactRecord; // membuat node temp untuk menyimpan di akhir nodenya
     printf("berapa banyak kontak yang ingin kamu simpan? ");
     scanf("%d", &count);
-    while (temp->next != NULL){
+    while (temp->next != NULL){ // loop ini untuk pindah ke node terakhir
         temp=temp->next;
     }
     for(i=0; i<count; i++){
-        temp->next = malloc(sizeof(struct node));
+        temp->next = malloc(sizeof(struct node)); // node setelahnya di memory allocate untuk diisi oleh data baru
         temp = temp->next;
         temp->name = malloc(50*sizeof(char));
         temp->number = malloc(50*sizeof(char));
 
-        printf("nama kontak: ");
+        printf("nama kontak: "); // bagian untuk mengisi nodenya dengan data baru
         scanf("%s", temp->name);
         printf("nomor kontak: ");
         scanf("%s", temp->number);
-        list_size++;
+        list_size++; // list_size terus di update
     }
-    temp->next = NULL;
-    printf("\nberhasil disimpan\n");
+    temp->next = NULL; // ketika selesai node->next diisi oleh NULL sebagai tanda akhir dari linkedlistnya
+    printf("\nberhasil disimpan\n\n"); 
 
 }
 
@@ -93,8 +90,8 @@ void saveContact(){
 // abhi (saya sendiri)
 void writeToFile(){
     FILE * fptr;
-    fptr = fopen("data.txt", "w");
-    struct node * iterator = contactRecord;
+    fptr = fopen("data.txt", "w"); // untuk membuka filenya dan diisi oleh data yang ada di linkedlistnya
+    struct node * iterator = contactRecord; 
 
     if(fptr==NULL)
     {
@@ -103,39 +100,39 @@ void writeToFile(){
 
     else
     {
-        for(int i=0; i<list_size; i++){
-            fprintf(fptr, "%s\n%s\n", iterator->name, iterator->number);
-            iterator= iterator->next;
+        while(iterator!=NULL){ // di loop sampai node terakhir
+            fprintf(fptr, "%s\n%s\n", iterator->name, iterator->number); // fprintf untuk mengisi ke txt filenya
+            iterator= iterator->next; 
         }
     }
 
-    fclose(fptr);
+    fclose(fptr); // menutup filenya setelah diisi
 }
 
 
 // fungsi ini untuk mengisi linkedlist nya dengan data yang ada di txt file ketika awal program baru mulai\
 // Abhhi (saya senndiri)
 void loadingData(){
-    FILE * fp = fopen("data.txt", "r");
+    FILE * fp = fopen("data.txt", "r"); // membuka file sebagai read mode
     if (fp == NULL){
         perror("error:");
         exit(1);
     }
-    struct node * prev;
-    record = contactRecord;
+    struct node * prev; // node untuk mengtrack node sebelumnnya
+    record = contactRecord; // record sebagai ptr dari head
     record->name = malloc(50*sizeof(char));
     record->number = malloc(50*sizeof(char));
-    while (fscanf(fp, "%s %s", record->name, record->number) > 0){
+    while (fscanf(fp, "%s %s", record->name, record->number) > 0){ // fscanf untuk mengisi linkedlist dari txt file sampai fscanf return EOF(end of field)
         record->next = malloc(sizeof(struct node));
-        prev = record;
-        record = record->next;
+        prev = record; // prev sebagai node sebelumnya dari node record
+        record = record->next; // record lanjut di assign ke node setelahnya
         record->name = malloc(50*sizeof(char));
         record->number = malloc(50*sizeof(char));
-        list_size++;
+        list_size++; // list_size terus diupdate
     }
-    prev->next = NULL;
-    free(record);
-    fclose(fp);
+    prev->next = NULL; // untuk menutup linkedlistnya dengan NULL
+    free(record); // record harus dihapus agar tidak ada node yang tidak diinginkan
+    fclose(fp); // untuk menutup txt filenya
     return;
 }
 
@@ -149,17 +146,17 @@ void sort(){
     char nomor1[50], nomor2[50];
 
     for (int i=0; i<list_size-1; i++){
-            temp = contactRecord;
+            temp = contactRecord; // temp terus mulai lagi dari headnya
             swapped = 0;
         for (int j=0; j<list_size-i-1; j++){
-            prev = temp;
-            temp = temp->next;
-            strcpy(nama1, prev->name);
+            prev = temp; // prev sebagai node sebelumnya
+            temp = temp->next; // temp lanjut ke node setelahnya
+            strcpy(nama1, prev->name);  // strcpy untuk mengcopy data dari node ke string nama
             strcpy(nama2, temp->name);
             strcpy(nomor1, prev->number);
             strcpy(nomor2, temp->number);
-            if (strcmp(nama2, nama1) < 0){
-                strcpy(prev->name, nama2);
+            if (strcmp(nama2, nama1) < 0){ // strcmp untuk mengurutkan string secara abjad dengan return dari strcmp < 0
+                strcpy(prev->name, nama2); // untuk swap nilainya
                 strcpy(temp->name, nama1);
                 strcpy(prev->number, nomor2);
                 strcpy(temp->number, nomor1);
@@ -176,22 +173,24 @@ void sort(){
 // tika
 void searchName(char target[]){
     struct node * iterator = contactRecord;
-    while (iterator != NULL){
+    while (iterator != NULL){ // cari terus sampai akhir nodenya
         char str[50];
         strcpy(str, iterator->name);
+        // tolower untuk membuat string target dan string dari node nama menjadi huruf kecil agar menghilangkan sensitive case nya pada saat melakukan search
         for (int i=0; str[i]; i++){
             str[i] = tolower(str[i]);
         }
         for (int i=0; target[i]; i++){
             target[i] = tolower(target[i]);
         }
-        if (strcmp(str, target) == 0){
+        
+        if (strcmp(str, target) == 0){ // jika strcmp mengembalikan 0 berarti string kedua tersebut bernilai sama
             printf("nama kontak: %s\nnomor kontak: %s\n\n", iterator->name, iterator->number);
             return;
         }
-        iterator = iterator->next;
+        iterator = iterator->next; // untuk pindah ke node setelahnya
     }
-    printf("\nnggak ada bang\n\n");
+    printf("\nnggak ada bang\n\n"); // jika tidak ditemukan
     return;
 }
 
@@ -199,15 +198,15 @@ void searchName(char target[]){
 // tika
 void searchNumber(char target[]){
     struct node * iterator = contactRecord;
-    while (iterator != NULL){
-        if (strcmp(iterator->number, target) == 0){
+    while (iterator != NULL){ // cari terus sampai akhir nodenya
+        if (strcmp(iterator->number, target) == 0){ // jika strcmp mengembalikan 0 berarti string kedua tersebut bernilai sama
             printf("nama kontak: %s\nnomor kontak: %s\n\n", iterator->name, iterator->number);
             return;
         }
-        iterator = iterator->next;
+        iterator = iterator->next; // untuk pindah ke node setelahnya
 
     }
-    printf("\nnggak ada bang\n\n");
+    printf("\nnggak ada bang\n\n"); // jika tidak ditemukan
     return;
 }
 
@@ -215,16 +214,16 @@ void searchNumber(char target[]){
 // fidel
 void editNumber(char target[]){
     record = contactRecord;
-    while (record != NULL){
-        if (strcmp(record->number, target) == 0){
+    while (record != NULL){ // cari terus sampai akhir nodenya
+        if (strcmp(record->number, target) == 0){ // jika strcmp mengembalikan 0 berarti string kedua tersebut bernilai sama
             printf("nomor kontak baru : ");
-            scanf("%s", record->number);
+            scanf("%s", record->number); // isi node tersebut dengan nilai yang baru
             printf("\nberhasil diubah\n\n");
             return;
         }
-        record = record->next;
+        record = record->next; // untuk pindah ke node setelahnya
     }
-    printf("\nnggak ada bang\n\n");
+    printf("\nnggak ada bang\n\n"); // jika tidak ditemukan
     return;
 
 }
@@ -234,24 +233,25 @@ void editNumber(char target[]){
 // fidel
 void editName(char target[]){
     record = contactRecord;
-    while (record != NULL){
+    while (record != NULL){ // cari terus sampai akhir nodenya
         char str[50];
         strcpy(str, record->name);
+        // tolower untuk membuat string target dan string dari node nama menjadi huruf kecil agar menghilangkan sensitive case nya pada saat melakukan search
         for (int i=0; str[i]; i++){
             str[i] = tolower(str[i]);
         }
         for (int i=0; target[i]; i++){
             target[i] = tolower(target[i]);
         }
-        if (strcmp(str, target) == 0){
+        if (strcmp(str, target) == 0){ // jika strcmp mengembalikan 0 berarti string kedua tersebut bernilai sama
             printf("nama kontak baru : ");
-            scanf("%s", record->name);
+            scanf("%s", record->name); // isi node tersebut dengan nilai yang baru
             printf("\nberhasil diubah\n\n");
             return;
         }
-        record = record->next;
+        record = record->next; // untuk pindah ke node setelahnya
     }
-    printf("\nnggak ada bang\n\n");
+    printf("\nnggak ada bang\n\n"); // jika tidak ditemukan
     return;
 
 }
@@ -260,27 +260,29 @@ void editName(char target[]){
 // fidel
 void deleteNode(char target[]){
     struct node * temp = contactRecord, * prev;
-
+    
+    // jika head tersebut merupakan data yang harus dihapus
     if (temp != NULL && strcmp(temp->name, target) == 0) {
-        contactRecord = temp->next;
-        free(temp);
-        list_size--;
-        printf("\nberhasil dihapus\n\n");
+        contactRecord = temp->next; // headnya pindah ke node temp setelahnya
+        free(temp); // node tempnya di hapus
+        list_size--; // list_size terus diupdate
+        printf("\nberhasil dihapus\n\n"); 
         return;
     }
-    //int i = 1;
-    while (temp != NULL && strcmp(temp->name, target) != 0) {
-        prev = temp;
-        temp = temp->next;
+    
+    // jika yang dihapus berada di tengah
+    while (temp != NULL && strcmp(temp->name, target) != 0) { // jika ditemukan maka akan keluar dari loop
+        prev = temp; // prev sebagai node sebelumnya
+        temp = temp->next; // temp sebagai node yang sekarang
     }
 
-    if (temp != NULL && strcmp(temp->name, target) == 0){
-        prev->next = temp->next;
-        free(temp);
-        list_size--;
+    if (temp != NULL && strcmp(temp->name, target) == 0){ // jika ditemukan
+        prev->next = temp->next; // membuat prev->next nya ke temp->nextnya agar node tempnya bisa dihapus
+        free(temp); // menghapus node yang sekarang
+        list_size--; // list_size terus diupdate
         printf("\nberhasil dihapus\n\n");
         return;
-    } else {
+    } else { 
         printf("\nnggak ada bang\n\n");
         return;
     }
@@ -288,8 +290,8 @@ void deleteNode(char target[]){
 
 int main(){
     contactRecord = malloc(sizeof(struct node));
-    loadingData();
-    sort();
+    loadingData(); // awal mulai program loading data
+    sort(); // untuk sort datanya
     int run = 1;
     while (run == 1){
         int choice;
@@ -334,7 +336,7 @@ int main(){
         sort();
     }
     printf("\nTerima Kasih :>");
-    writeToFile();
+    writeToFile(); // selesai programnya jalan disimpan ke txt file
 
     return 0;
 }
