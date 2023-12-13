@@ -41,6 +41,14 @@ struct node {
     struct node *next;
 };
 
+void clearScreen() {
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
+
 struct node *contactRecord, *record; // contactRecord sebagai head node nya, record sebagai ptr nya
 
 // ukuran dari banyaknya node terus di ditambah ketika ada penambahan dan dikurang ketika ada pengurangan dan disimpan di variabel list_size
@@ -82,7 +90,7 @@ void saveContact(){
         list_size++; // list_size terus di update
     }
     temp->next = NULL; // ketika selesai node->next diisi oleh NULL sebagai tanda akhir dari linkedlistnya
-    printf("\nberhasil disimpan\n\n"); 
+    printf("\nberhasil disimpan\n\n");
 
 }
 
@@ -91,7 +99,7 @@ void saveContact(){
 void writeToFile(){
     FILE * fptr;
     fptr = fopen("data.txt", "w"); // untuk membuka filenya dan diisi oleh data yang ada di linkedlistnya
-    struct node * iterator = contactRecord; 
+    struct node * iterator = contactRecord;
 
     if(fptr==NULL)
     {
@@ -102,7 +110,7 @@ void writeToFile(){
     {
         while(iterator!=NULL){ // di loop sampai node terakhir
             fprintf(fptr, "%s\n%s\n", iterator->name, iterator->number); // fprintf untuk mengisi ke txt filenya
-            iterator= iterator->next; 
+            iterator= iterator->next;
         }
     }
 
@@ -183,7 +191,7 @@ void searchName(char target[]){
         for (int i=0; target[i]; i++){
             target[i] = tolower(target[i]);
         }
-        
+
         if (strcmp(str, target) == 0){ // jika strcmp mengembalikan 0 berarti string kedua tersebut bernilai sama
             printf("nama kontak: %s\nnomor kontak: %s\n\n", iterator->name, iterator->number);
             return;
@@ -260,16 +268,16 @@ void editName(char target[]){
 // fidel
 void deleteNode(char target[]){
     struct node * temp = contactRecord, * prev;
-    
+
     // jika head tersebut merupakan data yang harus dihapus
     if (temp != NULL && strcmp(temp->name, target) == 0) {
         contactRecord = temp->next; // headnya pindah ke node temp setelahnya
         free(temp); // node tempnya di hapus
         list_size--; // list_size terus diupdate
-        printf("\nberhasil dihapus\n\n"); 
+        printf("\nberhasil dihapus\n\n");
         return;
     }
-    
+
     // jika yang dihapus berada di tengah
     while (temp != NULL && strcmp(temp->name, target) != 0) { // jika ditemukan maka akan keluar dari loop
         prev = temp; // prev sebagai node sebelumnya
@@ -282,7 +290,7 @@ void deleteNode(char target[]){
         list_size--; // list_size terus diupdate
         printf("\nberhasil dihapus\n\n");
         return;
-    } else { 
+    } else {
         printf("\nnggak ada bang\n\n");
         return;
     }
@@ -299,33 +307,40 @@ int main(){
         printf("1)simpan kontak\n2)edit nama kontak\n3)edit nomor kontak\n4)cari nama kontak\n5)cari nomor kontak\n6)hapus kontak\n7)tampilkan semua kontak\n0)keluar\n");
         scanf("%d", &choice);
         if (choice == 1){
+            clearScreen();
             saveContact();
         }else if (choice == 2){
+            clearScreen();
             char target[50];
             printf("nama kontak yang ingin diubah: ");
             scanf("%s", target);
             editName(target);
         } else if (choice == 3){
+            clearScreen();
             char target[50];
             printf("nomor kontak yang ingin diubah: ");
             scanf("%s", target);
             editNumber(target);
         } else if (choice == 4){
+            clearScreen();
             char target[50];
             printf("nama kontak yang ingin dicari: ");
             scanf("%s", target);
             searchName(target);
         } else if (choice == 5){
+            clearScreen();
             char target[50];
             printf("nomor kontak yang ingin dicari: ");
             scanf("%s", target);
             searchNumber(target);
         } else if (choice == 6){
+            clearScreen();
             char target[50];
             printf("nama kontak yang ingin dihapus: ");
             scanf("%s", target);
             deleteNode(target);
         } else if (choice == 7){
+            clearScreen();
             printContactRecord();
         } else if (choice == 0){
             run = 0;
