@@ -309,12 +309,14 @@ int main(){
         if (choice == 1){
             clearScreen();
             saveContact();
+            sort();
         }else if (choice == 2){
             clearScreen();
             char target[50];
             printf("nama kontak yang ingin diubah: ");
             scanf("%s", target);
             editName(target);
+            sort();
         } else if (choice == 3){
             clearScreen();
             char target[50];
@@ -341,6 +343,7 @@ int main(){
             deleteNode(target);
         } else if (choice == 7){
             clearScreen();
+            sort();
             printContactRecord();
         } else if (choice == 0){
             run = 0;
@@ -348,7 +351,6 @@ int main(){
         } else {
             printf("masukkan sesuai pilihan\n\n");
         }
-        sort();
     }
     printf("\nTerima Kasih :>");
     writeToFile(); // selesai programnya jalan disimpan ke txt file
